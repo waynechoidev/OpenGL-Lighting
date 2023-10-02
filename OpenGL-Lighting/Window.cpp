@@ -1,4 +1,4 @@
-#include "Window.h"
+﻿#include "Window.h"
 
 Window::Window(GLint windowWidth, GLint windowHeight)
 {
@@ -9,7 +9,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	_mainWindow = 0;
 }
 
-void Window::Initialise()
+void Window::initialise()
 {
 	if (!glfwInit())
 	{
@@ -58,7 +58,9 @@ void Window::Initialise()
 	glViewport(0, 0, _bufferWidth, _bufferHeight);
 
 	glfwSetWindowUserPointer(_mainWindow, this);
+
 }
+
 
 Window::~Window()
 {
