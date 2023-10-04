@@ -14,5 +14,7 @@ public:
 	void initialise(GLFWwindow* window);
 	void update(bool* boolean );
 	void render();
+
+	~Gui() {};
 };
 
