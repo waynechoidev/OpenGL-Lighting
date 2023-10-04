@@ -20,6 +20,8 @@ public:
 	bool getShouldClose() { return glfwWindowShouldClose(_mainWindow); }
 	GLFWwindow* getWindow() { return _mainWindow; }
 
+	void clear(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+
 	void swapBuffers() { glfwSwapBuffers(_mainWindow); }
 
 	~Window();

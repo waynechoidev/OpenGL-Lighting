@@ -7,6 +7,10 @@
 
 #include <GL\glew.h>
 
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
+
 class Program
 {
 public:
@@ -17,11 +21,7 @@ public:
 
 	std::string readFile(const char* fileLocation);
 
-	GLuint getProjectionLocation();
-	GLuint getModelLocation();
-	GLuint getViewLocation();
-
-	void use();
+	void use(glm::mat4 model, glm::mat4 projection, glm::mat4 view);
 	void clear();
 
 	~Program();

@@ -12,7 +12,7 @@ public:
 	Gui() {};
 	
 	void initialise(GLFWwindow* window);
-	void update(bool* boolean );
+	void update(bool* boolean, float* translation, float* scaling, float* rotation);
 	void render();
 
 	~Gui() {};

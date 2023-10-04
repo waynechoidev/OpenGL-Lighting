@@ -81,22 +81,13 @@ void Program::compileShader(const char* vertexCode, const char* fragmentCode)
 	_uniformView = glGetUniformLocation(_programID, "view");
 }
 
-GLuint Program::getProjectionLocation()
-{
-	return _uniformProjection;
-}
-GLuint Program::getModelLocation()
-{
-	return _uniformModel;
-}
-GLuint Program::getViewLocation()
-{
-	return _uniformView;
-}
-
-void Program::use()
+void Program::use(glm::mat4 model, glm::mat4 projection, glm::mat4 view)
 {
 	glUseProgram(_programID);
+
+	glUniformMatrix4fv(_uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(_uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(_uniformView, 1, GL_FALSE, glm::value_ptr(view));
 }
 
 void Program::clear()
