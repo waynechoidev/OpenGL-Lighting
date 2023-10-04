@@ -76,14 +76,18 @@ void Program::compileShader(const char* vertexCode, const char* fragmentCode)
 		return;
 	}
 
+	_uniformUseTexture = glGetUniformLocation(_programID, "useTexture");
+
 	_uniformProjection = glGetUniformLocation(_programID, "projection");
 	_uniformModel = glGetUniformLocation(_programID, "model");
 	_uniformView = glGetUniformLocation(_programID, "view");
 }
 
-void Program::use(glm::mat4 model, glm::mat4 projection, glm::mat4 view)
+void Program::use(bool useTexture, glm::mat4 model, glm::mat4 projection, glm::mat4 view)
 {
 	glUseProgram(_programID);
+
+	glUniform1i(_uniformUseTexture, useTexture);
 
 	glUniformMatrix4fv(_uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(_uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
@@ -97,6 +101,8 @@ void Program::clear()
 		glDeleteProgram(_programID);
 		_programID = 0;
 	}
+
+	_uniformUseTexture = 0;
 
 	_uniformModel = 0;
 	_uniformProjection = 0;

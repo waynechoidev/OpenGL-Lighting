@@ -19,8 +19,6 @@ Box box;
 Program program;
 Texture texture;
 
-bool boolean;
-
 int main()
 {
 	mainWindow = Window(1366, 768);
@@ -40,6 +38,8 @@ int main()
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
+	bool useTexture = true;
+
 	float translation[3] = { 0.0f, 0.0f, 0.0f };
 	float scaling[3] = { 0.5f, 0.5f, 0.5f };
 	float rotation[3] = { 0.0f, 0.0f, 0.0f };
@@ -53,9 +53,9 @@ int main()
 		// Get + Handle user input events
 		glfwPollEvents();
 
-		gui.update(&boolean, translation, scaling, rotation);
+		gui.update(&useTexture, translation, scaling, rotation);
 
-		mainWindow.clear(1.0f, 1.0f, 1.0f, 1.0f);
+		mainWindow.clear(0.0f, 0.0f, 0.0f, 1.0f);
 
 		glm::mat4 model(1.0f);
 		model = glm::translate(model, glm::vec3(translation[0],translation[1],translation[2]-2.5f));
@@ -66,7 +66,7 @@ int main()
 		
 		glm::mat4 view = glm::lookAt(position, position + front, up);
 
-		program.use(model, projection, view);
+		program.use(useTexture, model, projection, view);
 
 		texture.use();
 

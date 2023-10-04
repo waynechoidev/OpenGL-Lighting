@@ -21,13 +21,15 @@ public:
 
 	std::string readFile(const char* fileLocation);
 
-	void use(glm::mat4 model, glm::mat4 projection, glm::mat4 view);
+	void use(bool useTexture, glm::mat4 model, glm::mat4 projection, glm::mat4 view);
 	void clear();
 
 	~Program();
 
 private:
-	GLuint _programID, _uniformProjection, _uniformModel, _uniformView;
+	GLuint _programID;
+	GLuint _uniformUseTexture;
+	GLuint _uniformProjection, _uniformModel, _uniformView;
 
 	void compileShader(const char* vertexCode, const char* fragmentCode);
 	void addShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
