@@ -13,7 +13,7 @@ void Window::initialise()
 {
 	if (!glfwInit())
 	{
-		printf("Error Initialising GLFW");
+		std::cout << "Error Initialising GLFW";
 		glfwTerminate();
 	}
 
@@ -31,7 +31,7 @@ void Window::initialise()
 
 	if (!_mainWindow)
 	{
-		printf("Error creating GLFW window!");
+		std::cout << "Error creating GLFW window!";
 		glfwTerminate();
 	}
 
@@ -47,7 +47,7 @@ void Window::initialise()
 	GLenum error = glewInit();
 	if (error != GLEW_OK)
 	{
-		printf("Error: %s", glewGetErrorString(error));
+		std::cout << "Error: %s" << glewGetErrorString(error);
 		glfwDestroyWindow(_mainWindow);
 		glfwTerminate();
 	}

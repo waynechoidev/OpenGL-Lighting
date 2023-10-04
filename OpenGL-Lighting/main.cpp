@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+
 #include "Window.h"
 #include "Gui.h"
 #include "Box.h"
@@ -40,29 +42,29 @@ int main()
 
 	bool useTexture = true;
 
-	float translation[3] = { 0.0f, 0.0f, 0.0f };
-	float scaling[3] = { 0.5f, 0.5f, 0.5f };
-	float rotation[3] = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 scaling = { 0.5f, 0.5f, 0.5f };
+	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 
-	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 front = { 0.0f, 0.0f, -1.0f };
+	glm::vec3 up = { 0.0f, 1.0f, 0.0f };
 
 	while (!mainWindow.getShouldClose())
 	{
 		// Get + Handle user input events
 		glfwPollEvents();
 
-		gui.update(&useTexture, translation, scaling, rotation);
+		gui.update(&useTexture, &translation.x, &scaling.x, &rotation.x);
 
 		mainWindow.clear(0.0f, 0.0f, 0.0f, 1.0f);
 
 		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(translation[0],translation[1],translation[2]-2.5f));
-		model = glm::scale(model, glm::vec3(scaling[0],scaling[1],scaling[2]));
-		model = glm::rotate(model, rotation[0], glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, rotation[1], glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotation[2], glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(translation.x,translation.y,translation.z-2.5f));
+		model = glm::scale(model, scaling);
+		model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		
 		glm::mat4 view = glm::lookAt(position, position + front, up);
 

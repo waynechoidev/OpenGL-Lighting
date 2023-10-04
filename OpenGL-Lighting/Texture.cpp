@@ -16,7 +16,7 @@ void Texture::initialise(const char* fileLoc)
 	unsigned char* texData = stbi_load(fileLoc, &_width, &_height, &_bitDepth, 0);
 	if (!texData)
 	{
-		printf("Failed to find : %s\n", fileLoc);
+		std::cout << "Failed to find : %s\n" << fileLoc;
 		return;
 	}
 
