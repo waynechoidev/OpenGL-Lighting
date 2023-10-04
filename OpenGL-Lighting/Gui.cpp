@@ -36,7 +36,13 @@ void Gui::update(bool* useTexture,
 	ImGui::SliderFloat2("Front", viewFront, -1.0f, 1.0f);
 
 	ImGui::Text("Projection");
-	ImGui::Checkbox("use perspective projection", usePerspective);
+	if (ImGui::RadioButton("Perspective", *usePerspective == true)) {
+		*usePerspective = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Orthographic", *usePerspective == false)) {
+		*usePerspective = false;
+	}
 
 	ImGui::End();
 }
