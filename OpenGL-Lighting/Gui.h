@@ -12,7 +12,10 @@ public:
 	Gui() {};
 	
 	void initialise(GLFWwindow* window);
-	void update(bool* boolean, float* translation, float* scaling, float* rotation);
+	void update(bool* useTexture,
+				float* translation, float* scaling, float* rotation,
+				float* viewPosition, float* viewFront,
+				bool* usePerspective);
 	void render();
 
 	~Gui() {};
