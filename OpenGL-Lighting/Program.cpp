@@ -81,9 +81,24 @@ void Program::compileShader(const char* vertexCode, const char* fragmentCode)
 	_uniformProjection = glGetUniformLocation(_programID, "projection");
 	_uniformModel = glGetUniformLocation(_programID, "model");
 	_uniformView = glGetUniformLocation(_programID, "view");
+
+	_uniformMaterialAmbient = glGetUniformLocation(_programID, "material.ambient");
+	_uniformMaterialShininess = glGetUniformLocation(_programID, "material.shininess");
+	_uniformMaterialDiffuse = glGetUniformLocation(_programID, "material.diffuse");
+	_uniformMaterialSpecular = glGetUniformLocation(_programID, "material.specular");
+
+	_uniformLightPosition = glGetUniformLocation(_programID, "light.position");
+	_uniformLightDirection = glGetUniformLocation(_programID, "light.direction");
+	_uniformLightStrength = glGetUniformLocation(_programID, "light.strength");
+	_uniformLightFallOffStart = glGetUniformLocation(_programID, "light.fallOffStart");
+	_uniformLightFallOffEnd = glGetUniformLocation(_programID, "light.fallOffEnd");
+	_uniformLightSpotPower = glGetUniformLocation(_programID, "light.spotPower");
+	_uniformLightIsDirectional = glGetUniformLocation(_programID, "light.isDirectional");
+	_uniformLightIsPoint = glGetUniformLocation(_programID, "light.isPoint");
+	_uniformLightIsSpot = glGetUniformLocation(_programID, "light.isSpot");
 }
 
-void Program::use(bool useTexture, glm::mat4 model, glm::mat4 projection, glm::mat4 view)
+void Program::use(bool useTexture, glm::mat4 model, glm::mat4 projection, glm::mat4 view, Material** material, Light** light)
 {
 	glUseProgram(_programID);
 
@@ -92,6 +107,21 @@ void Program::use(bool useTexture, glm::mat4 model, glm::mat4 projection, glm::m
 	glUniformMatrix4fv(_uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(_uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 	glUniformMatrix4fv(_uniformView, 1, GL_FALSE, glm::value_ptr(view));
+
+	glUniform1f(_uniformMaterialAmbient, (*material)->ambient);
+	glUniform1f(_uniformMaterialShininess, (*material)->shininess);
+	glUniform1f(_uniformMaterialDiffuse, (*material)->diffuse);
+	glUniform1f(_uniformMaterialSpecular, (*material)->specular);
+	
+	glUniform3f(_uniformLightPosition, (*light)->position.x, (*light)->position.y, (*light)->position.z);
+	glUniform3f(_uniformLightDirection, (*light)->direction.x, (*light)->direction.y, (*light)->direction.z);
+	glUniform1f(_uniformLightStrength, (*light)->strength);
+	glUniform1f(_uniformLightFallOffStart, (*light)->fallOffStart);
+	glUniform1f(_uniformLightFallOffEnd, (*light)->fallOffEnd);
+	glUniform1f(_uniformLightSpotPower, (*light)->spotPower);
+	glUniform1i(_uniformLightIsDirectional, (*light)->isDirectional);
+	glUniform1i(_uniformLightIsPoint, (*light)->isPoint);
+	glUniform1i(_uniformLightIsSpot, (*light)->isSpot);
 }
 
 void Program::clear()

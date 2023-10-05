@@ -1,19 +1,11 @@
 #include <iostream>
-#include <vector>
 
 #include "Window.h"
 #include "Gui.h"
 #include "Box.h"
 #include "Program.h"
-
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-#include <glm\gtc\type_ptr.hpp>
 #include "Texture.h"
-
-#include "imgui.h"
-#include "imgui_impl_opengl3.h"
-#include "imgui_impl_glfw.h"
+#include "Common.h"
 
 Window mainWindow;
 Gui gui;
@@ -25,7 +17,7 @@ int main()
 {
 	mainWindow = Window(1366, 768);
 	mainWindow.initialise();
-
+	
 	gui = Gui();
 	gui.initialise(mainWindow.getWindow());
 	
@@ -42,8 +34,8 @@ int main()
 
 	// Model
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 scaling = { 0.5f, 0.5f, 0.5f };
-	glm::vec3 rotation = { 0.3f, 0.3f, 0.0f };
+	glm::vec3 scaling = { 0.4f, 0.4f, 0.4f };
+	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 
 	// View
 	glm::vec3 viewPosition = { 0.0f, 0.0f, 0.0f };
@@ -56,12 +48,34 @@ int main()
 	glm::mat4 orthographicProjection = glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, 0.1f, 100.0f);
 	bool usePerspective = true;
 
+	// Material
+	Material *material = new Material;
+	material->ambient = 0.1f;
+	material->shininess = 1.0f;
+	material->diffuse = 1.0f;
+	material->specular = 1.0f;
+
+	// Light
+	Light* light = new Light;
+	light->position = { 0.0f, 0.0f, -1.0f };
+	light->direction = { 0.0f, 0.0f, 1.0f };
+	light->strength = 0.5f;
+	light->fallOffStart = 0.0f;
+	light->fallOffEnd = 10.0f;
+	light->spotPower = 1.0f;
+	light->isDirectional = 0;
+	light->isPoint = 0;
+	light->isSpot = 1;
+
 	while (!mainWindow.getShouldClose())
 	{
 		// Get + Handle user input events
 		glfwPollEvents();
 
-		gui.update(&useTexture, &translation.x, &scaling.x, &rotation.x, &viewPosition.x, &viewFront.x, &usePerspective);
+		gui.update(&useTexture,
+			&translation.x, &scaling.x, &rotation.x,
+			&viewPosition.x, &viewFront.x,
+			&usePerspective, &material, &light);
 
 		mainWindow.clear(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -79,7 +93,7 @@ int main()
 		// Projection
 		glm::mat4 projection = usePerspective ? perspectiveProjection : orthographicProjection;
 
-		program.use(useTexture, model, projection, view);
+		program.use(useTexture, model, projection, view, &material, &light);
 
 		texture.use();
 

@@ -13,7 +13,7 @@ void Gui::initialise(GLFWwindow* window)
 void Gui::update(bool* useTexture, 
 	float* translation, float* scaling, float* rotation,
 	float* viewPosition, float* viewFront,
-	bool* usePerspective)
+	bool* usePerspective, Material** material, Light** light)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -32,7 +32,7 @@ void Gui::update(bool* useTexture,
 	ImGui::SliderFloat3("Scaling", scaling, 0.1f, 1.0f);
 
 	ImGui::Text("View");
-	ImGui::SliderFloat3("Position", viewPosition, -1.0f, 1.0f);
+	ImGui::SliderFloat3("Camera Position", viewPosition, -1.0f, 1.0f);
 	ImGui::SliderFloat2("Front", viewFront, -1.0f, 1.0f);
 
 	ImGui::Text("Projection");
@@ -43,6 +43,36 @@ void Gui::update(bool* useTexture,
 	if (ImGui::RadioButton("Orthographic", *usePerspective == false)) {
 		*usePerspective = false;
 	}
+
+	ImGui::Text("Material");
+	ImGui::SliderFloat("Diffuse", &(*material)->diffuse, 0.0f, 1.0f);
+	ImGui::SliderFloat("Specular", &(*material)->specular, 0.0f, 1.0f);
+
+	ImGui::Text("Light");
+	if (ImGui::RadioButton("Directional Light", (*light)->isDirectional == 1))
+	{
+		(*light)->isDirectional = 1;
+		(*light)->isPoint = 0;
+		(*light)->isSpot = 0;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Point Light", (*light)->isPoint == 1))
+	{
+		(*light)->isDirectional = 0;
+		(*light)->isPoint = 1;
+		(*light)->isSpot = 0;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Spot Light", (*light)->isSpot == 1))
+	{
+		(*light)->isDirectional = 0;
+		(*light)->isPoint = 0;
+		(*light)->isSpot = 1;
+	}
+	ImGui::SliderFloat3("Light Position", &(*light)->position[0], -2.0f, 2.0f);
+	ImGui::SliderFloat("Fall off start", &(*light)->fallOffStart, 0.0f, 5.0f);
+	ImGui::SliderFloat("Fall off end", &(*light)->fallOffEnd, 0.0f, 10.0f);
+	ImGui::SliderFloat("Spot power", &(*light)->spotPower, 1.0f, 512.0f);
 
 	ImGui::End();
 }

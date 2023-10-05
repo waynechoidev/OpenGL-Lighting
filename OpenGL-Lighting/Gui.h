@@ -3,8 +3,7 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
-//#include <GL\glew.h>
-//#include <GLFW\glfw3.h>
+#include "Common.h"
 
 class Gui
 {
@@ -15,7 +14,7 @@ public:
 	void update(bool* useTexture,
 				float* translation, float* scaling, float* rotation,
 				float* viewPosition, float* viewFront,
-				bool* usePerspective);
+				bool* usePerspective, Material** material, Light** light);
 	void render();
 
 	~Gui() {};
