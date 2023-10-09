@@ -76,52 +76,93 @@ void Program::compileShader(const char* vertexCode, const char* fragmentCode)
 		return;
 	}
 
-	_uniformUseTexture = glGetUniformLocation(_programID, "useTexture");
+	glGenBuffers(1, &_uboMatrices);
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+	glBufferData(GL_UNIFORM_BUFFER, 192, nullptr, GL_DYNAMIC_DRAW);
+	GLuint matricesBlockIndex = glGetUniformBlockIndex(_programID, "Matrices");
+	glUniformBlockBinding(_programID, matricesBlockIndex, 0);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, _uboMatrices);
 
-	_uniformProjection = glGetUniformLocation(_programID, "projection");
-	_uniformModel = glGetUniformLocation(_programID, "model");
-	_uniformView = glGetUniformLocation(_programID, "view");
+	glGenBuffers(1, &_uboFragment);
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboFragment);
+	glBufferData(GL_UNIFORM_BUFFER, 16, nullptr, GL_DYNAMIC_DRAW);
+	GLuint fragmentBlockIndex = glGetUniformBlockIndex(_programID, "Fragment");
+	glUniformBlockBinding(_programID, fragmentBlockIndex, 1);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, _uboFragment);
 
-	_uniformMaterialAmbient = glGetUniformLocation(_programID, "material.ambient");
-	_uniformMaterialShininess = glGetUniformLocation(_programID, "material.shininess");
-	_uniformMaterialDiffuse = glGetUniformLocation(_programID, "material.diffuse");
-	_uniformMaterialSpecular = glGetUniformLocation(_programID, "material.specular");
+	glGenBuffers(1, &_uboMaterial);
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboMaterial);
+	glBufferData(GL_UNIFORM_BUFFER, 16, nullptr, GL_DYNAMIC_DRAW);
+	GLuint materialBlockIndex = glGetUniformBlockIndex(_programID, "Material");
+	glUniformBlockBinding(_programID, materialBlockIndex, 2);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 2, _uboMaterial);
 
-	_uniformLightPosition = glGetUniformLocation(_programID, "light.position");
-	_uniformLightDirection = glGetUniformLocation(_programID, "light.direction");
-	_uniformLightStrength = glGetUniformLocation(_programID, "light.strength");
-	_uniformLightFallOffStart = glGetUniformLocation(_programID, "light.fallOffStart");
-	_uniformLightFallOffEnd = glGetUniformLocation(_programID, "light.fallOffEnd");
-	_uniformLightSpotPower = glGetUniformLocation(_programID, "light.spotPower");
-	_uniformLightIsDirectional = glGetUniformLocation(_programID, "light.isDirectional");
-	_uniformLightIsPoint = glGetUniformLocation(_programID, "light.isPoint");
-	_uniformLightIsSpot = glGetUniformLocation(_programID, "light.isSpot");
+	glGenBuffers(1, &_uboLight);
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboLight);
+	glBufferData(GL_UNIFORM_BUFFER, 52, nullptr, GL_DYNAMIC_DRAW);
+	GLuint lightBlockIndex = glGetUniformBlockIndex(_programID, "Light");
+	glUniformBlockBinding(_programID, lightBlockIndex, 3);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 3, _uboLight);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	/*GLuint _uniformBlockIndex = glGetUniformBlockIndex(_programID, "TestLight");
+	std::cout << _uniformBlockIndex << "\n";
+	GLint _uniformSize;
+	glGetActiveUniformBlockiv(_programID, _uniformBlockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &_uniformSize);
+	std::cout << _uniformSize << "\n";
+
+	const GLchar* names[] = {"position","strength", "direction",  "fallOffStart", "fallOffEnd", "spotPower", "isDirectional", "isPoint", "isSpot"};
+
+	const int n = 9;
+
+	GLuint indices[n];
+	glGetUniformIndices(_programID, n, names, indices);
+	for (int i = 0; i < n; ++i) {
+		std::cout << names[i] << " has index : " << indices[i] << " in the block. \n";
+	}
+
+	GLint offset[n];
+	glGetActiveUniformsiv(_programID, n, indices, GL_UNIFORM_OFFSET, offset);
+
+	for (int i = 0; i < n; ++i) {
+		std::cout << names[i] << " has offset: " << offset[i] << " in the block. \n";
+	}*/
+
 }
 
-void Program::use(bool useTexture, glm::mat4 model, glm::mat4 projection, glm::mat4 view, Material** material, Light** light)
+void Program::use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm::mat4 projection, glm::mat4 view, Material** material, Light** light)
 {
 	glUseProgram(_programID);
 
-	glUniform1i(_uniformUseTexture, useTexture);
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, glm::value_ptr(model));
+	glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, glm::value_ptr(view));
+	glBufferSubData(GL_UNIFORM_BUFFER, 128, 64, glm::value_ptr(projection));
 
-	glUniformMatrix4fv(_uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(_uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-	glUniformMatrix4fv(_uniformView, 1, GL_FALSE, glm::value_ptr(view));
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboFragment);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 12, glm::value_ptr(viewPosition));
+	int useTextureInt = useTexture ? 1 : 0;
+	glBufferSubData(GL_UNIFORM_BUFFER, 12, 4, &useTextureInt);
 
-	glUniform1f(_uniformMaterialAmbient, (*material)->ambient);
-	glUniform1f(_uniformMaterialShininess, (*material)->shininess);
-	glUniform1f(_uniformMaterialDiffuse, (*material)->diffuse);
-	glUniform1f(_uniformMaterialSpecular, (*material)->specular);
-	
-	glUniform3f(_uniformLightPosition, (*light)->position.x, (*light)->position.y, (*light)->position.z);
-	glUniform3f(_uniformLightDirection, (*light)->direction.x, (*light)->direction.y, (*light)->direction.z);
-	glUniform1f(_uniformLightStrength, (*light)->strength);
-	glUniform1f(_uniformLightFallOffStart, (*light)->fallOffStart);
-	glUniform1f(_uniformLightFallOffEnd, (*light)->fallOffEnd);
-	glUniform1f(_uniformLightSpotPower, (*light)->spotPower);
-	glUniform1i(_uniformLightIsDirectional, (*light)->isDirectional);
-	glUniform1i(_uniformLightIsPoint, (*light)->isPoint);
-	glUniform1i(_uniformLightIsSpot, (*light)->isSpot);
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboMaterial);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &(*material)->ambient);
+	glBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &(*material)->shininess);
+	glBufferSubData(GL_UNIFORM_BUFFER, 8, 4, &(*material)->diffuse);
+	glBufferSubData(GL_UNIFORM_BUFFER, 12, 4, &(*material)->specular);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboLight);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 12, glm::value_ptr((*light)->position));
+	glBufferSubData(GL_UNIFORM_BUFFER, 12, 4, &(*light)->strength);
+	glBufferSubData(GL_UNIFORM_BUFFER, 16, 12, glm::value_ptr((*light)->direction));
+	glBufferSubData(GL_UNIFORM_BUFFER, 28, 4, &(*light)->fallOffStart);
+	glBufferSubData(GL_UNIFORM_BUFFER, 32, 4, &(*light)->fallOffEnd);
+	glBufferSubData(GL_UNIFORM_BUFFER, 36, 4, &(*light)->spotPower);
+	glBufferSubData(GL_UNIFORM_BUFFER, 40, 4, &(*light)->isDirectional);
+	glBufferSubData(GL_UNIFORM_BUFFER, 44, 4, &(*light)->isPoint);
+	glBufferSubData(GL_UNIFORM_BUFFER, 48, 4, &(*light)->isSpot);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void Program::clear()
@@ -132,11 +173,7 @@ void Program::clear()
 		_programID = 0;
 	}
 
-	_uniformUseTexture = 0;
-
-	_uniformModel = 0;
-	_uniformProjection = 0;
-	_uniformView = 0;
+	_uboMatrices = _uboFragment = _uboMaterial = _uboLight = 0;
 }
 
 
@@ -171,3 +208,4 @@ Program::~Program()
 {
 	clear();
 }
+

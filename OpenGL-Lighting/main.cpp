@@ -93,7 +93,7 @@ int main()
 		// Projection
 		glm::mat4 projection = usePerspective ? perspectiveProjection : orthographicProjection;
 
-		program.use(useTexture, model, projection, view, &material, &light);
+		program.use(useTexture, viewPosition, model, projection, view, &material, &light);
 
 		texture.use();
 

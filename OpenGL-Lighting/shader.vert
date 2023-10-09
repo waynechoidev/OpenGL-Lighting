@@ -8,9 +8,13 @@ out vec3 posWorld;
 out vec3 normalWorld;
 out vec2 TexCoord;
 
-uniform mat4 model;
-uniform mat4 projection;
-uniform mat4 view;
+layout(std140) uniform Vertices
+{
+	mat4 model; // 64			0
+	mat4 projection; // 64		64
+	mat4 view; // 64			128
+	// 192
+};
 
 void main()
 {
