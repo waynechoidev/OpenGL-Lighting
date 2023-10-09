@@ -99,35 +99,35 @@ void Program::compileShader(const char* vertexCode, const char* fragmentCode)
 
 	glGenBuffers(1, &_uboLight);
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboLight);
-	glBufferData(GL_UNIFORM_BUFFER, 52, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, 56, nullptr, GL_DYNAMIC_DRAW);
 	GLuint lightBlockIndex = glGetUniformBlockIndex(_programID, "Light");
 	glUniformBlockBinding(_programID, lightBlockIndex, 3);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 3, _uboLight);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	/*GLuint _uniformBlockIndex = glGetUniformBlockIndex(_programID, "TestLight");
-	std::cout << _uniformBlockIndex << "\n";
-	GLint _uniformSize;
-	glGetActiveUniformBlockiv(_programID, _uniformBlockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &_uniformSize);
-	std::cout << _uniformSize << "\n";
+	//GLuint _uniformBlockIndex = glGetUniformBlockIndex(_programID, "Light");
+	//std::cout << _uniformBlockIndex << "\n";
+	//GLint _uniformSize;
+	//glGetActiveUniformBlockiv(_programID, _uniformBlockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &_uniformSize);
+	//std::cout << _uniformSize << "\n";
 
-	const GLchar* names[] = {"position","strength", "direction",  "fallOffStart", "fallOffEnd", "spotPower", "isDirectional", "isPoint", "isSpot"};
+	//const GLchar* names[] = {"position","strength", "direction",  "fallOffStart", "fallOffEnd", "spotPower", "isDirectional", "isPoint", "isSpot"};
 
-	const int n = 9;
+	//const int n = 9;
 
-	GLuint indices[n];
-	glGetUniformIndices(_programID, n, names, indices);
-	for (int i = 0; i < n; ++i) {
-		std::cout << names[i] << " has index : " << indices[i] << " in the block. \n";
-	}
+	//GLuint indices[n];
+	//glGetUniformIndices(_programID, n, names, indices);
+	//for (int i = 0; i < n; ++i) {
+	//	std::cout << names[i] << " has index : " << indices[i] << " in the block. \n";
+	//}
 
-	GLint offset[n];
-	glGetActiveUniformsiv(_programID, n, indices, GL_UNIFORM_OFFSET, offset);
+	//GLint offset[n];
+	//glGetActiveUniformsiv(_programID, n, indices, GL_UNIFORM_OFFSET, offset);
 
-	for (int i = 0; i < n; ++i) {
-		std::cout << names[i] << " has offset: " << offset[i] << " in the block. \n";
-	}*/
+	//for (int i = 0; i < n; ++i) {
+	//	std::cout << names[i] << " has offset: " << offset[i] << " in the block. \n";
+	//}
 
 }
 
@@ -161,6 +161,8 @@ void Program::use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm:
 	glBufferSubData(GL_UNIFORM_BUFFER, 40, 4, &(*light)->isDirectional);
 	glBufferSubData(GL_UNIFORM_BUFFER, 44, 4, &(*light)->isPoint);
 	glBufferSubData(GL_UNIFORM_BUFFER, 48, 4, &(*light)->isSpot);
+	int useBlinnPhongInt = (*light)->useBlinnPhong ? 1 : 0;
+	glBufferSubData(GL_UNIFORM_BUFFER, 52, 4, &useBlinnPhongInt);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

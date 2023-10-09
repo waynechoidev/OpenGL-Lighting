@@ -33,7 +33,8 @@ layout(std140) uniform Light
     int isDirectional; // 4     40
     int isPoint; // 4           44
     int isSpot; // 4            48
-    // 52
+    bool useBlinnPhong; // 4      52
+    // 56
 } light;
 
 uniform sampler2D theTexture;
@@ -46,10 +47,19 @@ float calcAttenuation(float d, float falloffStart, float falloffEnd)
 
 vec3 blinnPhong(vec3 lightStrength, vec3 lightVec, vec3 normal, vec3 toEye)
 {
-    vec3 halfway = normalize(toEye + lightVec);
-    float hdotn = dot(halfway, normal);
-    vec3 specular = vec3(material.specular) * pow(max(hdotn, 0.0f), material.shininess);
-    return material.ambient + (vec3(material.diffuse) + specular) * lightStrength;
+    if(light.useBlinnPhong)
+    {
+        vec3 halfway = normalize(toEye + lightVec);
+        float hdotn = dot(halfway, normal);
+        vec3 specular = vec3(material.specular) * pow(max(hdotn, 0.0f), material.shininess);
+        return material.ambient + (vec3(material.diffuse) + specular) * lightStrength;
+    }
+    else
+    {
+        vec3 r = -reflect(lightVec, normal);
+        vec3 specular = vec3(material.specular) * pow(max(dot(toEye, r), 0.0f), material.shininess);
+        return material.ambient + (vec3(material.diffuse) + specular) * lightStrength;    
+    }
 }
 
 vec3 computeDirectionalLight(vec3 normal, vec3 toEye)
@@ -126,5 +136,4 @@ void main()
     res += computeSpotLight(posWorld, normalWorld, toEye) * light.isSpot;
 
 	colour = useTexture ? vec4(res, 1.0) * texture(theTexture, TexCoord) : vec4(res, 1.0);
-    //colour = lightest.isSpot == 1 ? vec4(vec3(lightest.position), 1.0f) : vec4(vec3(material.specular), 1.0);
 }

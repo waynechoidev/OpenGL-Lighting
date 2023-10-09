@@ -12,7 +12,7 @@ void Gui::initialise(GLFWwindow* window)
 
 void Gui::update(bool* useTexture, 
 	float* translation, float* scaling, float* rotation,
-	float* viewPosition, float* viewFront,
+	float* viewPosition, float* yaw, float* pitch,
 	bool* usePerspective, Material** material, Light** light)
 {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -24,16 +24,17 @@ void Gui::update(bool* useTexture,
 	// Print framerate
 	ImGui::Text("Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	
-	ImGui::Checkbox("use texture", useTexture);
+	ImGui::Checkbox("Use Texture", useTexture);
 	
 	ImGui::Text("Model");
 	ImGui::SliderFloat3("Translation", translation, -2.0f, 2.0f);
 	ImGui::SliderFloat3("Rotation", rotation, -3.14f, 3.14f);
-	ImGui::SliderFloat3("Scaling", scaling, 0.1f, 1.0f);
+	ImGui::SliderFloat3("Scaling", scaling, 0.1f, 2.0f);
 
 	ImGui::Text("View");
 	ImGui::SliderFloat3("Camera Position", viewPosition, -1.0f, 1.0f);
-	ImGui::SliderFloat2("Front", viewFront, -1.0f, 1.0f);
+	ImGui::SliderFloat("Yaw", yaw, -180.0f, 0.0f);
+	ImGui::SliderFloat("Pitch", pitch, -90.0f, 90.0f);
 
 	ImGui::Text("Projection");
 	if (ImGui::RadioButton("Perspective", *usePerspective == true)) {
@@ -49,6 +50,7 @@ void Gui::update(bool* useTexture,
 	ImGui::SliderFloat("Specular", &(*material)->specular, 0.0f, 1.0f);
 
 	ImGui::Text("Light");
+	ImGui::Checkbox("Use Blinn Phong", &(*light)->useBlinnPhong);
 	if (ImGui::RadioButton("Directional Light", (*light)->isDirectional == 1))
 	{
 		(*light)->isDirectional = 1;

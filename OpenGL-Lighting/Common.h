@@ -20,4 +20,5 @@ struct Light {
 	GLint isDirectional;
 	GLint isPoint;
 	GLint isSpot;
+	bool useBlinnPhong;
 };
