@@ -61,7 +61,7 @@ int main()
 	Light* light = new Light;
 	light->position = { 0.0f, 0.0f, -1.0f };
 	light->direction = { 0.0f, 0.0f, 1.0f };
-	light->strength = 0.5f;
+	light->strength = 0.1;
 	light->fallOffStart = 0.0f;
 	light->fallOffEnd = 10.0f;
 	light->spotPower = 1.0f;

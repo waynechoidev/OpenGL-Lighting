@@ -20,6 +20,6 @@ void main()
 {
 	gl_Position = projection * view * model * vec4(pos, 1.0);
 	posWorld = (model * vec4(pos, 1.0)).xyz;
-	normalWorld = normalize(mat3(transpose(inverse(model))) * norm);
+	normalWorld = mat3(transpose(inverse(model))) * norm;
 	TexCoord = tex;
 }
