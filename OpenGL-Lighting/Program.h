@@ -17,12 +17,12 @@ class Program
 public:
 	Program();
 
-	void createFromString(const char* vertexCode, const char* fragmentCode);
-	void createFromFiles(const char* vertexLocation, const char* fragmentLocation);
+	void createFromString(std::string vertexCode, std::string fragmentCode);
+	void createFromFiles(std::string vertexLocation, std::string fragmentLocation);
 
-	std::string readFile(const char* fileLocation);
+	std::string readFile(std::string fileLocation);
 
-	void use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm::mat4 projection, glm::mat4 view, Material** material, Light** light);
+	void use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm::mat4 projection, glm::mat4 view, const Material& material, const Light& light);
 	void clear();
 
 	~Program();
@@ -31,6 +31,6 @@ private:
 	GLuint _programID;
 	GLuint _uboMatrices, _uboFragment, _uboMaterial, _uboLight;
 
-	void compileShader(const char* vertexCode, const char* fragmentCode);
-	void addShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
+	void compileShader(std::string vertexCode, std::string fragmentCode);
+	void addShader(GLuint theProgram, std::string shaderCode, GLenum shaderType);
 };

@@ -6,12 +6,12 @@ Program::Program()
 	clear();
 }
 
-void Program::createFromString(const char* vertexCode, const char* fragmentCode)
+void Program::createFromString(std::string vertexCode, std::string fragmentCode)
 {
 	compileShader(vertexCode, fragmentCode);
 }
 
-void Program::createFromFiles(const char* vertexLocation, const char* fragmentLocation)
+void Program::createFromFiles(std::string vertexLocation, std::string fragmentLocation)
 {
 	std::string vertexString = readFile(vertexLocation);
 	std::string fragmentString = readFile(fragmentLocation);
@@ -21,10 +21,10 @@ void Program::createFromFiles(const char* vertexLocation, const char* fragmentLo
 	compileShader(vertexCode, fragmentCode);
 }
 
-std::string Program::readFile(const char* fileLocation)
+std::string Program::readFile(std::string fileLocation)
 {
 	std::string content;
-	std::ifstream fileStream(fileLocation, std::ios::in);
+	std::ifstream fileStream(fileLocation.c_str(), std::ios::in);
 
 	if (!fileStream.is_open()) {
 		std::cout << "Failed to read %s! File doesn't exist." << fileLocation;
@@ -42,7 +42,7 @@ std::string Program::readFile(const char* fileLocation)
 	return content;
 }
 
-void Program::compileShader(const char* vertexCode, const char* fragmentCode)
+void Program::compileShader(std::string vertexCode, std::string fragmentCode)
 {
 	_programID = glCreateProgram();
 
@@ -131,7 +131,7 @@ void Program::compileShader(const char* vertexCode, const char* fragmentCode)
 
 }
 
-void Program::use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm::mat4 projection, glm::mat4 view, Material** material, Light** light)
+void Program::use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm::mat4 projection, glm::mat4 view, const Material& material, const Light& light)
 {
 	glUseProgram(_programID);
 
@@ -146,22 +146,22 @@ void Program::use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm:
 	glBufferSubData(GL_UNIFORM_BUFFER, 12, 4, &useTextureInt);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboMaterial);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &(*material)->ambient);
-	glBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &(*material)->shininess);
-	glBufferSubData(GL_UNIFORM_BUFFER, 8, 4, &(*material)->diffuse);
-	glBufferSubData(GL_UNIFORM_BUFFER, 12, 4, &(*material)->specular);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &material.ambient);
+	glBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &material.shininess);
+	glBufferSubData(GL_UNIFORM_BUFFER, 8, 4, &material.diffuse);
+	glBufferSubData(GL_UNIFORM_BUFFER, 12, 4, &material.specular);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboLight);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, 12, glm::value_ptr((*light)->position));
-	glBufferSubData(GL_UNIFORM_BUFFER, 12, 4, &(*light)->strength);
-	glBufferSubData(GL_UNIFORM_BUFFER, 16, 12, glm::value_ptr((*light)->direction));
-	glBufferSubData(GL_UNIFORM_BUFFER, 28, 4, &(*light)->fallOffStart);
-	glBufferSubData(GL_UNIFORM_BUFFER, 32, 4, &(*light)->fallOffEnd);
-	glBufferSubData(GL_UNIFORM_BUFFER, 36, 4, &(*light)->spotPower);
-	glBufferSubData(GL_UNIFORM_BUFFER, 40, 4, &(*light)->isDirectional);
-	glBufferSubData(GL_UNIFORM_BUFFER, 44, 4, &(*light)->isPoint);
-	glBufferSubData(GL_UNIFORM_BUFFER, 48, 4, &(*light)->isSpot);
-	int useBlinnPhongInt = (*light)->useBlinnPhong ? 1 : 0;
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 12, glm::value_ptr(light.position));
+	glBufferSubData(GL_UNIFORM_BUFFER, 12, 4, &light.strength);
+	glBufferSubData(GL_UNIFORM_BUFFER, 16, 12, glm::value_ptr(light.direction));
+	glBufferSubData(GL_UNIFORM_BUFFER, 28, 4, &light.fallOffStart);
+	glBufferSubData(GL_UNIFORM_BUFFER, 32, 4, &light.fallOffEnd);
+	glBufferSubData(GL_UNIFORM_BUFFER, 36, 4, &light.spotPower);
+	glBufferSubData(GL_UNIFORM_BUFFER, 40, 4, &light.isDirectional);
+	glBufferSubData(GL_UNIFORM_BUFFER, 44, 4, &light.isPoint);
+	glBufferSubData(GL_UNIFORM_BUFFER, 48, 4, &light.isSpot);
+	int useBlinnPhongInt = light.useBlinnPhong ? 1 : 0;
 	glBufferSubData(GL_UNIFORM_BUFFER, 52, 4, &useBlinnPhongInt);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -179,15 +179,15 @@ void Program::clear()
 }
 
 
-void Program::addShader(GLuint theProgram, const char* shaderCode, GLenum shaderType)
+void Program::addShader(GLuint theProgram, std::string shaderCode, GLenum shaderType)
 {
 	GLuint theShader = glCreateShader(shaderType);
 
 	const GLchar* theCode[1];
-	theCode[0] = shaderCode;
+	theCode[0] = shaderCode.c_str();
 
 	GLint codeLength[1];
-	codeLength[0] = strlen(shaderCode);
+	codeLength[0] = (GLint)strlen(shaderCode.c_str());
 
 	glShaderSource(theShader, 1, theCode, codeLength);
 	glCompileShader(theShader);

@@ -1,13 +1,15 @@
 #pragma once
 
 #include <GL\glew.h>
+#include "Common.h"
+#include <vector>
 
 class Mesh
 {
 public:
 	Mesh();
 
-	void initialise(GLfloat* vertices, unsigned int* indices, unsigned int numOfVertices, unsigned int numOfIndices);
+	void initialise(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
 	void render();
 	void clear();
 

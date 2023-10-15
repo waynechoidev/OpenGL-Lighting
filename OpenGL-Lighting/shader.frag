@@ -136,5 +136,4 @@ void main()
     res += computeSpotLight(posWorld, normalWorld, toEye) * light.isSpot;
 
 	colour = useTexture ? vec4(res, 1.0) * texture(theTexture, TexCoord) : vec4(res, 1.0);
-    //colour = vec4(length(normalWorld));
 }

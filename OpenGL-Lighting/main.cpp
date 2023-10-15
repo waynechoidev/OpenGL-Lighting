@@ -51,34 +51,34 @@ int main()
 	bool useTexture = true;
 
 	// Material
-	Material *material = new Material;
-	material->ambient = 0.1f;
-	material->shininess = 1.0f;
-	material->diffuse = 1.0f;
-	material->specular = 1.0f;
+	Material material;
+	material.ambient = 0.1f;
+	material.shininess = 1.0f;
+	material.diffuse = 1.0f;
+	material.specular = 1.0f;
 
 	// Light
-	Light* light = new Light;
-	light->position = { 0.0f, 0.0f, -1.0f };
-	light->direction = { 0.0f, 0.0f, 1.0f };
-	light->strength = 0.1;
-	light->fallOffStart = 0.0f;
-	light->fallOffEnd = 10.0f;
-	light->spotPower = 1.0f;
-	light->isDirectional = 0;
-	light->isPoint = 0;
-	light->isSpot = 1;
-	light->useBlinnPhong = true;
+	Light light;
+	light.position = { 0.0f, 0.0f, -1.0f };
+	light.direction = { 0.0f, 0.0f, 1.0f };
+	light.strength = 0.1f;
+	light.fallOffStart = 0.0f;
+	light.fallOffEnd = 10.0f;
+	light.spotPower = 1.0f;
+	light.isDirectional = 0;
+	light.isPoint = 0;
+	light.isSpot = 1;
+	light.useBlinnPhong = true;
 
 	while (!mainWindow.getShouldClose())
 	{
 		// Get + Handle user input events
 		glfwPollEvents();
 
-		gui.update(&useTexture,
-			&translation.x, &scaling.x, &rotation.x,
-			&viewPosition.x, &yaw, &pitch,
-			&usePerspective, &material, &light);
+		gui.update(useTexture,
+			translation.x, scaling.x, rotation.x,
+			viewPosition.x, yaw, pitch,
+			usePerspective, material, light);
 
 		mainWindow.clear(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -101,7 +101,7 @@ int main()
 		// Projection
 		glm::mat4 projection = usePerspective ? perspectiveProjection : orthographicProjection;
 
-		program.use(useTexture, viewPosition, model, projection, view, &material, &light);
+		program.use(useTexture, viewPosition, model, projection, view, material, light);
 
 		texture.use();
 
