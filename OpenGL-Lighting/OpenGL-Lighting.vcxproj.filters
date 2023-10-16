@@ -61,8 +61,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.frag" />
-    <None Include="shader.vert" />
+    <None Include="object.frag" />
+    <None Include="object.vert" />
+    <None Include="normal.frag" />
+    <None Include="normal.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="box.jpg">

@@ -22,8 +22,11 @@ public:
 
 	std::string readFile(std::string fileLocation);
 
-	void use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm::mat4 projection, glm::mat4 view, const Material& material, const Light& light);
-	void clear();
+	void genVertexBuffers();
+	void genFragmentBuffers();
+	void use();
+	void bindVertexBuffers(glm::mat4 model, glm::mat4 projection, glm::mat4 view);
+	void bindFragmentBuffers(bool useTexture, glm::vec3 viewPosition, const Material& material, const Light& light);
 
 	~Program();
 
@@ -33,4 +36,5 @@ private:
 
 	void compileShader(std::string vertexCode, std::string fragmentCode);
 	void addShader(GLuint theProgram, std::string shaderCode, GLenum shaderType);
+	void clear();
 };

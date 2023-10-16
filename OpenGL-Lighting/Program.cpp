@@ -75,7 +75,10 @@ void Program::compileShader(std::string vertexCode, std::string fragmentCode)
 		std::cout << "Error validating program: '%s'\n" << eLog;
 		return;
 	}
+}
 
+void Program::genVertexBuffers()
+{
 	glGenBuffers(1, &_uboMatrices);
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
 	glBufferData(GL_UNIFORM_BUFFER, 192, nullptr, GL_DYNAMIC_DRAW);
@@ -83,6 +86,11 @@ void Program::compileShader(std::string vertexCode, std::string fragmentCode)
 	glUniformBlockBinding(_programID, matricesBlockIndex, 0);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, _uboMatrices);
 
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void Program::genFragmentBuffers()
+{
 	glGenBuffers(1, &_uboFragment);
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboFragment);
 	glBufferData(GL_UNIFORM_BUFFER, 16, nullptr, GL_DYNAMIC_DRAW);
@@ -105,41 +113,23 @@ void Program::compileShader(std::string vertexCode, std::string fragmentCode)
 	glBindBufferBase(GL_UNIFORM_BUFFER, 3, _uboLight);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	//GLuint _uniformBlockIndex = glGetUniformBlockIndex(_programID, "Light");
-	//std::cout << _uniformBlockIndex << "\n";
-	//GLint _uniformSize;
-	//glGetActiveUniformBlockiv(_programID, _uniformBlockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &_uniformSize);
-	//std::cout << _uniformSize << "\n";
-
-	//const GLchar* names[] = {"position","strength", "direction",  "fallOffStart", "fallOffEnd", "spotPower", "isDirectional", "isPoint", "isSpot"};
-
-	//const int n = 9;
-
-	//GLuint indices[n];
-	//glGetUniformIndices(_programID, n, names, indices);
-	//for (int i = 0; i < n; ++i) {
-	//	std::cout << names[i] << " has index : " << indices[i] << " in the block. \n";
-	//}
-
-	//GLint offset[n];
-	//glGetActiveUniformsiv(_programID, n, indices, GL_UNIFORM_OFFSET, offset);
-
-	//for (int i = 0; i < n; ++i) {
-	//	std::cout << names[i] << " has offset: " << offset[i] << " in the block. \n";
-	//}
-
 }
 
-void Program::use(bool useTexture, glm::vec3 viewPosition, glm::mat4 model, glm::mat4 projection, glm::mat4 view, const Material& material, const Light& light)
+void Program::use()
 {
 	glUseProgram(_programID);
+}
 
+void Program::bindVertexBuffers(glm::mat4 model, glm::mat4 projection, glm::mat4 view)
+{
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, glm::value_ptr(model));
 	glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, glm::value_ptr(view));
 	glBufferSubData(GL_UNIFORM_BUFFER, 128, 64, glm::value_ptr(projection));
+}
 
+void Program::bindFragmentBuffers(bool useTexture, glm::vec3 viewPosition, const Material& material, const Light& light)
+{
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboFragment);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 12, glm::value_ptr(viewPosition));
 	int useTextureInt = useTexture ? 1 : 0;

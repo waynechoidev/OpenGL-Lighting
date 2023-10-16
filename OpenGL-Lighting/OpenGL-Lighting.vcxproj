@@ -145,8 +145,10 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.frag" />
-    <None Include="shader.vert" />
+    <None Include="normal.frag" />
+    <None Include="normal.vert" />
+    <None Include="object.frag" />
+    <None Include="object.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="box.jpg" />

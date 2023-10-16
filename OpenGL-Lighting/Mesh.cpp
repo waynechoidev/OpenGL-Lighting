@@ -37,11 +37,11 @@ void Mesh::initialise(const std::vector<Vertex>& vertices, const std::vector<GLu
 	glBindVertexArray(0);
 }
 
-void Mesh::render()
+void Mesh::render(GLint shape)
 {
 	glBindVertexArray(_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IBO);
-	glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, 0);
+	glDrawElements(shape, _indexCount, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }

@@ -1,5 +1,10 @@
 #include "Box.h"
-#include <iostream>
+
+Box::Box()
+{
+    _mesh = std::make_shared<Mesh>();
+    _normal = std::make_shared<Mesh>();
+}
 
 void Box::initialise()
 {
@@ -96,10 +101,22 @@ void Box::initialise()
         v.position = positions[i];
         v.normal = normals[i];
         v.texcoord = texcoords[i];
-        vertices.push_back(v);
+        _meshVertices.push_back(v);
+        
+        Vertex n;
+        n.position = positions[i];
+        n.normal = normals[i];
+        n.texcoord.x = n.texcoord.y = 0.0f;
+        _normalVertices.push_back(n);
+
+        n.texcoord.x = 1.0f;
+        _normalVertices.push_back(n);
+
+        _normalIndices.push_back(GLuint(2 * i));
+        _normalIndices.push_back(GLuint(2 * i + 1));
     }
 
-	indices = {
+	_meshIndices = {
 		0,  1,  2,  0,  2,  3,  // Top
 		4,  5,  6,  4,  6,  7,  // Bottom
 		8,  9,  10, 8,  10, 11, // Front
@@ -107,7 +124,17 @@ void Box::initialise()
 		16, 17, 18, 16, 18, 19, // Left
 		20, 21, 22, 20, 22, 23  // Right
 	};
-    std::cout << vertices.size() * 8 << std::endl;
 
-	Mesh::initialise(vertices, indices);
+	_mesh->initialise(_meshVertices, _meshIndices);
+    _normal->initialise(_normalVertices, _normalIndices);
+}
+
+void Box::draw()
+{
+    _mesh->render(GL_TRIANGLES);
+}
+
+void Box::drawNormal()
+{
+    _normal->render(GL_LINES);
 }

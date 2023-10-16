@@ -10,7 +10,8 @@
 Window mainWindow;
 Gui gui;
 Box box;
-Program program;
+Program mainProgram;
+Program normalProgram;
 Texture texture;
 
 int main()
@@ -24,8 +25,14 @@ int main()
 	box = Box();
 	box.initialise();
 
-	program = Program();
-	program.createFromFiles("shader.vert", "shader.frag");
+	mainProgram = Program();
+	mainProgram.createFromFiles("object.vert", "object.frag");
+	mainProgram.genVertexBuffers();
+	mainProgram.genFragmentBuffers();
+
+	normalProgram = Program();
+	normalProgram.createFromFiles("normal.vert", "normal.frag");
+	normalProgram.genVertexBuffers();
 
 	texture = Texture();
 	texture.initialise("box.jpg");
@@ -34,7 +41,7 @@ int main()
 	// Model
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 scaling = { 0.4f, 0.4f, 0.4f };
-	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 rotation = { 0.4f, 0.4f, 0.0f };
 
 	// View
 	glm::vec3 viewPosition = { 0.0f, 0.0f, 0.0f };
@@ -101,12 +108,17 @@ int main()
 		// Projection
 		glm::mat4 projection = usePerspective ? perspectiveProjection : orthographicProjection;
 
-		program.use(useTexture, viewPosition, model, projection, view, material, light);
-
 		texture.use();
 
-		box.render();
+		mainProgram.use();
+		mainProgram.bindVertexBuffers(model, projection, view);
+		mainProgram.bindFragmentBuffers(useTexture, viewPosition, material, light);
+		box.draw();
 
+		normalProgram.use();
+		normalProgram.bindVertexBuffers(model, projection, view);
+		box.drawNormal();
+		
 		gui.render();
 
 		glUseProgram(0);
