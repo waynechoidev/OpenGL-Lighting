@@ -11,7 +11,7 @@ public:
 	Gui() {};
 	
 	void initialise(GLFWwindow* window);
-	void update(bool& useTexture,
+	void update(bool& useTexture, bool& wireFrame, bool& backFaceCull, bool& drawNormal,
 		float& translation, float& scaling, float& rotation,
 		float& viewPosition, float& yaw, float& pitch,
 		bool& usePerspective, Material& material, Light& light);

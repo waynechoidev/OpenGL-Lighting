@@ -10,7 +10,7 @@ void Gui::initialise(GLFWwindow* window)
 	ImGui_ImplOpenGL3_Init("#version 130");
 }
 
-void Gui::update(bool& useTexture,
+void Gui::update(bool& useTexture, bool& wireFrame, bool& backFaceCull, bool& drawNormal,
 	float& translation, float& scaling, float& rotation,
 	float& viewPosition, float& yaw, float& pitch,
 	bool& usePerspective, Material& material, Light& light) 
@@ -25,6 +25,9 @@ void Gui::update(bool& useTexture,
 	ImGui::Text("Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	
 	ImGui::Checkbox("Use Texture", &useTexture);
+	ImGui::Checkbox("Wire Frame", &wireFrame);
+	ImGui::Checkbox("Backface Curl", &backFaceCull);
+	ImGui::Checkbox("Draw Normal", &drawNormal);
 	
 	ImGui::Text("Model");
 	ImGui::SliderFloat3("Translation", &translation, -2.0f, 2.0f);

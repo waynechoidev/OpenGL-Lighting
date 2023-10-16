@@ -37,6 +37,10 @@ int main()
 	texture = Texture();
 	texture.initialise("box.jpg");
 
+	bool useTexture = true;
+	bool wireFrame = false;
+	bool backFaceCull = false;
+	bool drawNormal = false;
 
 	// Model
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
@@ -54,8 +58,6 @@ int main()
 	glm::mat4 perspectiveProjection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
 	glm::mat4 orthographicProjection = glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, 0.1f, 100.0f);
 	bool usePerspective = true;
-
-	bool useTexture = true;
 
 	// Material
 	Material material;
@@ -82,10 +84,13 @@ int main()
 		// Get + Handle user input events
 		glfwPollEvents();
 
-		gui.update(useTexture,
+		gui.update(useTexture, wireFrame, backFaceCull, drawNormal,
 			translation.x, scaling.x, rotation.x,
 			viewPosition.x, yaw, pitch,
 			usePerspective, material, light);
+
+		glPolygonMode(GL_FRONT_AND_BACK, wireFrame ? GL_LINE : GL_FILL);
+		backFaceCull ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 
 		mainWindow.clear(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -117,7 +122,7 @@ int main()
 
 		normalProgram.use();
 		normalProgram.bindVertexBuffers(model, projection, view);
-		box.drawNormal();
+		if(drawNormal) box.drawNormal();
 		
 		gui.render();
 
