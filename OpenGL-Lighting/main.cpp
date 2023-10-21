@@ -16,7 +16,7 @@ Texture texture;
 
 int main()
 {
-	mainWindow = Window(1366, 768);
+	mainWindow = Window(1920, 1080);
 	mainWindow.initialise();
 	
 	gui = Gui();
