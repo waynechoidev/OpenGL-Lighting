@@ -22,6 +22,6 @@ void main()
 	posWorld = (model * vec4(pos, 1.0)).xyz;
 	
 	// ignore scale
-	normalWorld = mat3(transpose(inverse(model))) * norm;
+	normalWorld = normalize(mat3(transpose(inverse(model))) * norm);
 	TexCoord = tex;
 }

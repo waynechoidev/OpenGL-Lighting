@@ -45,7 +45,7 @@ int main()
 	// Model
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 scaling = { 0.4f, 0.4f, 0.4f };
-	glm::vec3 rotation = { 0.4f, 0.4f, 0.0f };
+	glm::vec3 rotation = { 0.5f, 0.5f, 0.0f };
 
 	// View
 	glm::vec3 viewPosition = { 0.0f, 0.0f, 0.0f };
@@ -70,7 +70,7 @@ int main()
 	Light light;
 	light.position = { 0.0f, 0.0f, -1.0f };
 	light.direction = { 0.0f, 0.0f, 1.0f };
-	light.strength = 0.1f;
+	light.strength = 1.0;
 	light.fallOffStart = 0.0f;
 	light.fallOffEnd = 10.0f;
 	light.spotPower = 1.0f;

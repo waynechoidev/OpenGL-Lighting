@@ -18,7 +18,7 @@ void main()
 
 
     // compute Normal first
-    vec3 normalWorld = mat3(transpose(inverse(model))) * norm;
+    vec3 normalWorld = normalize(mat3(transpose(inverse(model))) * norm);
     
     position = projection * view * model * position;
     
