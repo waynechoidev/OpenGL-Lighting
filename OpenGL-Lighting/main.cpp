@@ -48,7 +48,7 @@ int main()
 	glm::vec3 rotation = { 0.5f, 0.5f, 0.0f };
 
 	// View
-	glm::vec3 viewPosition = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 viewPosition = { 0.0f, 0.0f, 2.5f };
 	glm::vec3 viewUp = { 0.0f, 1.0f, 0.0f };
 	float yaw = -90.0f;
 	float pitch = 0.0f;
@@ -68,8 +68,8 @@ int main()
 
 	// Light
 	Light light;
-	light.position = { 0.0f, 0.0f, -1.0f };
-	light.direction = { 0.0f, 0.0f, 1.0f };
+	light.position = { 0.0f, 0.0f, 2.0f };
+	light.direction = { 0.0f, 0.0f, -1.0f };
 	light.strength = 1.0;
 	light.fallOffStart = 0.0f;
 	light.fallOffEnd = 10.0f;
@@ -96,7 +96,7 @@ int main()
 
 		// Model
 		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(translation.x,translation.y,translation.z-2.5f));
+		model = glm::translate(model, glm::vec3(translation.x,translation.y,translation.z));
 		model = glm::scale(model, scaling);
 		model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
